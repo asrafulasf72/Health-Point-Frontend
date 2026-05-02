@@ -17,23 +17,15 @@ import {
   queryRagAction,
   ingestDoctorsAction,
   getUserRoleAction,
-} from "@/app/_actions/rag.actions";
+} from "@/app/_actions/rag.action";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-type MessageSource = {
-  id: string;
-  content: string;
-  similarity: number;
-  metadata?: { name?: string; [key: string]: unknown };
-  sourceType?: string;
-};
 
 type Message = {
   id: string;
   role: "user" | "bot";
   content: string;
-  sources?: MessageSource[];
+  matchInfo?: string;   // e.g. "72% matched" from the RAG action
   isError?: boolean;
   queryToRetry?: string;
 };
@@ -58,7 +50,7 @@ const SUGGESTED_QUERIES = [
 function TypingIndicator() {
   return (
     <div className="flex items-end gap-2 max-w-[85%]">
-      <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0 shadow-md">
+      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0 shadow-md">
         <Bot size={16} className="text-white" />
       </div>
       <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
@@ -100,8 +92,8 @@ function MessageBubble({
       <div
         className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-md ${
           isUser
-            ? "bg-linear-to-br from-slate-600 to-slate-800"
-            : "bg-linear-to-br from-blue-500 to-violet-600"
+            ? "bg-gradient-to-br from-slate-600 to-slate-800"
+            : "bg-gradient-to-br from-blue-500 to-violet-600"
         }`}
       >
         {isUser ? (
@@ -118,7 +110,7 @@ function MessageBubble({
         <div
           className={`px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
             isUser
-              ? "bg-linear-to-br from-blue-600 to-violet-600 text-white rounded-2xl rounded-br-sm shadow-md"
+              ? "bg-gradient-to-br from-blue-600 to-violet-600 text-white rounded-2xl rounded-br-sm shadow-md"
               : "bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-bl-sm shadow-sm"
           }`}
         >
@@ -146,29 +138,12 @@ function MessageBubble({
           </button>
         )}
 
-        {/* Sources */}
-        {!isUser && message.sources && message.sources.length > 0 && (
-          <div className="flex flex-wrap gap-1 px-1">
-            <span className="text-[10px] text-slate-400 w-full mb-0.5">
-              Sources:
-            </span>
-            {message.sources.map((src, i) => (
-              <span
-                key={i}
-                className="inline-flex items-center gap-1 text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-medium"
-              >
-                <Sparkles size={8} />
-                {src?.metadata?.name
-                  ? String(src.metadata.name)
-                  : `Source ${i + 1}`}
-                {typeof src.similarity === "number" && (
-                  <span className="text-blue-400">
-                    {(src.similarity * 100).toFixed(0)}%
-                  </span>
-                )}
-              </span>
-            ))}
-          </div>
+        {/* Match info badge */}
+        {!isUser && message.matchInfo && (
+          <span className="inline-flex items-center gap-1 text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-medium">
+            <Sparkles size={8} />
+            {message.matchInfo}
+          </span>
         )}
       </div>
     </div>
@@ -248,7 +223,9 @@ export default function FloatingChatbot() {
         content: result.success
           ? result.answer!
           : (result.error ?? "Something went wrong. Please try again."),
-        sources: result.success ? result.sources : undefined,
+        matchInfo: result.success && typeof result.sources === "string"
+          ? result.sources
+          : undefined,
         isError: !result.success,
         queryToRetry: !result.success ? text : undefined,
       };
@@ -261,7 +238,7 @@ export default function FloatingChatbot() {
     <>
       {/* ── Chat Window ────────────────────────────────────────────────── */}
       <div
-        className={`fixed bottom-24 right-6 z-50 w-88 sm:w-104 flex flex-col rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden bg-white transition-all duration-300 ease-in-out ${
+        className={`fixed bottom-24 right-6 z-50 w-88 sm:w-[416px] flex flex-col rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden bg-white transition-all duration-300 ease-in-out ${
           isOpen
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-6 pointer-events-none"
@@ -270,7 +247,7 @@ export default function FloatingChatbot() {
         aria-hidden={!isOpen}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-blue-600 to-violet-600 px-4 py-3 flex items-center justify-between shrink-0">
+        <div className="bg-gradient-to-br from-blue-600 to-violet-600 px-4 py-3 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
               <Bot size={20} className="text-white" />
@@ -361,7 +338,7 @@ export default function FloatingChatbot() {
             <button
               type="submit"
               disabled={isQuerying || !inputValue.trim()}
-              className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0 cursor-pointer shadow-md"
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0 cursor-pointer shadow-md"
             >
               <Send size={16} />
             </button>
@@ -373,7 +350,7 @@ export default function FloatingChatbot() {
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={isOpen ? "Close AI assistant" : "Open AI assistant"}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-linear-to-br from-blue-600 to-violet-600 text-white flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer ${
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 text-white flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer ${
           isOpen ? "rotate-90" : "rotate-0"
         }`}
       >

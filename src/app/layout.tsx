@@ -2,7 +2,6 @@ import { Toaster } from "@/components/ui/sonner";
 import QueryProviders from "@/providers/QueryProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import FloatingChatbot from "@/components/modules/Chatbot/FloatingChatbot";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,9 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Health Point",
+  title: "PH Healthcare Management System",
   description: "A comprehensive healthcare management system built with Next.js, TypeScript, and Tailwind CSS. This application provides features for managing patient records, appointments, billing, and more, ensuring efficient healthcare administration.",
 };
+
+import FloatingChatbot from "@/components/modules/Chatbot/FloatingChatbot";
 
 export default function RootLayout({
   children,

@@ -1,157 +1,86 @@
-import { Search, Calendar, Star, SparkleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight, Activity } from "lucide-react";
 
-
-export function Hero({
-  badge = {
-    text: "AI-Powered Healthcare",
-  },
-  heading = {
-    line1: "Find Your Perfect",
-    line2: "Doctor with AI",
-  },
-  description = [
-    "Our advanced AI technology analyzes your symptoms, medical",
-    "history, and preferences to match you with the best-fit doctors",
-    "in seconds.",
-  ],
-  buttons = {
-    primary: {
-      text: "Find Your Doctor",
-    },
-    secondary: {
-      text: "Book Appointment",
-    },
-  },
-  stats = [
-    { value: "50K+", label: "Patients Served" },
-    { value: "1000+", label: "Expert Doctors" },
-    {
-      value: "4.9",
-      label: "Patient Rating",
-      icon: <Star className="size-6 fill-yellow-400 stroke-yellow-400" />,
-    },
-  ],
-  formCard = {
-    title: "Ask our AI",
-    symptomLabel: "For which issue you want to consult?",
-    symptomPlaceholder: "e.g., heart, nurology, kideny, fever",
-    specialtyLabel: "Preferred specialty",
-    specialtyOptions: [
-      "General Physician",
-      "Cardiologist",
-      "Dermatologist",
-      "Pediatrician",
-      "Orthopedic",
-    ],
-    defaultSpecialty: "General Physician",
-    submitText: "Get AI Recommendations",
-    footerText:
-      "✨ Powered by advanced AI algorithms for accurate doctor matching",
-  },
-}) {
-  //   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //     e.preventDefault();
-  //     const formData = new FormData(e.currentTarget);
-  //     const data = {
-  //       symptoms: formData.get('symptoms') as string,
-  //       specialty: formData.get('specialty') as string,
-  //     };
-  //     formCard.onSubmit?.(data);
-  //   };
-
+export default function Hero() {
   return (
-    <div className="w-full relative">
-      {/* Radial Gradient Background from Bottom */}
-      <div
-        className="absolute inset-0 z-0 "
-        style={{
-          background:
-            "radial-gradient(125% 125% at 50% 90%, #fff 30%, #155DFC 100%)",
-        }}
-      />
-      {/* Content Container */}
-      <div className="w-full px-4 py-8 md:px-8 lg:px-16 relative">
-        <div className="mx-auto max-w-[1200px]">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-            {/* Left Column - Hero Content */}
-            <div className="flex flex-col justify-center space-y-6">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-3 self-start rounded-full bg-white px-4 py-2">
-                <SparkleIcon />
-                <span className="text-[11.9px] font-medium text-blue-700">
-                  {badge.text}
-                </span>
-              </div>
+    <section className="relative overflow-hidden bg-background py-16 sm:py-24 lg:py-32">
+      {/* Decorative background blob */}
+      <div className="absolute inset-0 z-0 bg-primary/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <div className="absolute top-0 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[100px] md:top-20 md:right-20" />
 
-              {/* Heading */}
-              <div className="space-y-2">
-                <h1 className="text-[51px] leading-[60px]">{heading.line1}</h1>
-                <h1 className="text-[51px] leading-[60px]">{heading.line2}</h1>
+      <div className="container relative z-10 mx-auto px-4 md:px-6">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
+          <div className="flex flex-col justify-center space-y-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center rounded-lg bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                <Activity className="mr-2 h-4 w-4" />
+                Your Health, Our Priority
               </div>
-
-              {/* Description */}
-              <div className="space-y-1 text-[17px] leading-7 text-gray-600">
-                {description.map((line, index) => (
-                  <p key={index}>{line}</p>
-                ))}
+              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl xl:text-6xl text-foreground">
+                Advanced Healthcare <br />
+                <span className="text-primary">Made Simple</span>
+              </h1>
+              <p className="max-w-[600px] text-lg text-muted-foreground sm:text-xl">
+                Experience world-class medical services from the comfort of your
+                home. Connect with top doctors, book appointments, and manage
+                your health journey seamlessly.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button size="lg" className="w-full sm:w-auto group" asChild>
+                <Link href="/consultation">
+                  Book an Appointment
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
+                <Link href="/diagnostics">Explore Services</Link>
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border mt-8">
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">50+</h3>
+                <p className="text-sm text-muted-foreground">Specialists</p>
               </div>
-
-              {/* Buttons */}
-              <div className="flex flex-col gap-4 sm:flex-row">
-                {buttons.primary && (
-                  <Button className="h-[63.622px] gap-3 rounded-xl bg-blue-600 px-8 text-[15.3px] hover:bg-blue-700">
-                    <Search className="size-5" />
-                    {buttons.primary.text}
-                  </Button>
-                )}
-                {buttons.secondary && (
-                  <Button
-                    variant="outline"
-                    className="h-[63.622px] gap-3 rounded-xl border-blue-600 px-8 text-[15.3px] text-blue-600 hover:bg-blue-500"
-                  >
-                    <Calendar className="size-5" />
-                    {buttons.secondary.text}
-                  </Button>
-                )}
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">24/7</h3>
+                <p className="text-sm text-muted-foreground">Support</p>
               </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 pt-4">
-                {stats.map((stat, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <p className="text-[25.5px] leading-9">{stat.value}</p>
-                      {stat.icon}
-                    </div>
-                    <p className="text-[13.6px] leading-6 text-gray-600">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">10k+</h3>
+                <p className="text-sm text-muted-foreground">Patients</p>
               </div>
             </div>
-
-            {/* Right Column - Form Card */}
-            <div className="flex items-center justify-center lg:justify-end">
-              <div className="w-full max-w-[559.929px] rounded-2xl bg-white p-8 shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)]">
-                {/* Card Header */}
-                <div className="mb-6 flex items-center justify-between">
-                  <h2 className="text-[20.4px] leading-6">{formCard.title}</h2>
-                  <SparkleIcon />
+          </div>
+          
+          <div className="relative mx-auto w-full max-w-[500px] lg:max-w-none">
+            <div className="aspect-square sm:aspect-[4/3] lg:aspect-square overflow-hidden rounded-2xl bg-muted/30 shadow-xl border border-border flex items-center justify-center relative group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent mix-blend-overlay pointer-events-none" />
+                {/* We use a placeholder image or a nice illustration here */}
+                {/* For now we put a placeholder styling, ideally this would be an actual img tag */}
+                <div className="text-center p-8">
+                   <div className="h-24 w-24 rounded-full bg-primary/20 mx-auto mb-4 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500">
+                     <Activity className="h-12 w-12" />
+                   </div>
+                   <h3 className="text-xl font-bold mb-2">Modern Care</h3>
+                   <p className="text-muted-foreground text-sm">Empowering your health with technology</p>
                 </div>
-
-                {/* Footer */}
-                <div className="mt-6 border-t border-gray-200 pt-4">
-                  <p className="text-center text-[11.9px] leading-5 text-gray-600">
-                    {formCard.footerText}
-                  </p>
-                </div>
-              </div>
+            </div>
+            
+            {/* Floating badge */}
+            <div className="absolute -bottom-6 -left-6 rounded-xl bg-background border border-border p-4 shadow-lg flex items-center gap-4">
+               <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+               </div>
+               <div>
+                 <p className="text-sm font-semibold">Live Doctors</p>
+                 <p className="text-xs text-muted-foreground">Available now</p>
+               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
